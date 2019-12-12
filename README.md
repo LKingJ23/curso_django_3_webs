@@ -7,5 +7,6 @@ Iniciar el entorno virtual de python
 pip install django==2.2.8 
 
 ## Instalar librerias necesarias
-#### pip install Pillow
-#### pip install django-ckeditor
+pip install Pillow
+<br>
+pip install django-ckeditor
