@@ -4,7 +4,7 @@ from django import forms
 from django.views.generic.edit import UpdateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .forms import UserCreationFormEmail
+from .forms import UserCreationFormEmail, ProfileForm, EmailForm
 from .models import Profile
 
 # Create your views here.
@@ -26,8 +26,7 @@ class SignUpView(CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class ProfileUpdate(UpdateView):
-    model = Profile
-    fields = ['avatar', 'bio', 'link']
+    form_class = ProfileForm
     success_url = reverse_lazy('profile')
     template_name = 'registration/profile_form.html'
 
@@ -35,3 +34,19 @@ class ProfileUpdate(UpdateView):
         # recuperar el objecto a editar
         profile, create = Profile.objects.get_or_create(user = self.request.user)
         return profile
+
+@method_decorator(login_required, name='dispatch')
+class EmailUpdate(UpdateView):
+    form_class = EmailForm
+    success_url = reverse_lazy('profile')
+    template_name = 'registration/profile_email_form.html'
+
+    def get_object(self):
+        # recuperar el objecto a editar
+        return self.request.user
+
+    def get_form(self, form_class=None):
+        form = super(EmailUpdate, self).get_form()
+        #Modificar en tiempo real
+        form.fields['email'].widget = forms.EmailInput(attrs={'class':'form-control mb-2', 'placeholder': 'Email'})
+        return form
